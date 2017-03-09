@@ -4,26 +4,29 @@ import * as path from "path";
 import { container } from "./ioc/ioc";
 
 class Main {
-    private _environment: any;
     private _app: express.Application;
 
     public constructor(environment: any) {
-        this._environment = environment;
         this._app = express();
 
-        this.loadJsFiles();
+        this.initializeDependencyInjector(environment);
     }
 
     public onListening() {
-        console.log("Server listening on port: " + this._environment.port);
-
-        let helloController:any = container.get("HelloController");
+        let helloController: any = container.get("HelloController");
 
         helloController.hello("Sander");
     }
 
-    private loadJsFiles() {
-        this._environment.loadPaths.forEach((dir) => {
+    private initializeDependencyInjector(environment: any)
+    {
+        container.bind<any>("Environment").toConstantValue(environment);
+
+        this.loadJsFiles(environment.loadPaths);
+    }
+
+    private loadJsFiles(loadPaths: Array<string>) {
+        loadPaths.forEach((dir) => {
             Loader.load(path.join(__dirname, dir));
         });
     }
