@@ -1,11 +1,12 @@
+import TYPES from "../../constants/types";
 import Logger from "./logger";
 import { provide, inject } from "../../ioc/ioc";
 
-@provide(LoggerImpl)
+@provide(TYPES.Logger)
 class LoggerImpl implements Logger {
     private _appName: string;
 
-    public constructor(@inject("Environment") environment: any)
+    public constructor(@inject(TYPES.Environment) environment: any)
     {
         this._appName = environment.appName;
     }

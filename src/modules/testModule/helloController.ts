@@ -1,12 +1,12 @@
 import { inject, provide } from "../../ioc/ioc";
 import Logger from "../../libraries/logger/logger";
-import LoggerImpl from "../../libraries/logger/loggerImpl";
+import TYPES from "../../constants/types";
 
 @provide("HelloController")
 class HelloController {
     private _logger: Logger;
 
-    public constructor(@inject(LoggerImpl) logger: Logger) {
+    public constructor(@inject(TYPES.Logger) logger: Logger) {
         this._logger = logger;
     }
 

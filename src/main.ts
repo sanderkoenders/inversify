@@ -2,6 +2,7 @@ import * as express from "express";
 import Loader from "./ioc/loader";
 import * as path from "path";
 import { container } from "./ioc/ioc";
+import TYPES from "./constants/types";
 
 class Main {
     private _app: express.Application;
@@ -20,7 +21,7 @@ class Main {
 
     private initializeDependencyInjector(environment: any)
     {
-        container.bind<any>("Environment").toConstantValue(environment);
+        container.bind<Environment>(TYPES.Environment).toConstantValue(environment);
 
         this.loadJsFiles(environment.loadPaths);
     }
