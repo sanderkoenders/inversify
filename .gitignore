@@ -4,3 +4,6 @@
 .Trash-*
 /.idea
 /node_modules/
+/env.json
+
+/**/*.js
