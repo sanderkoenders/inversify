@@ -2,7 +2,7 @@ import { inject, provide } from "../../ioc/ioc";
 import Logger from "../../libraries/logger/logger";
 import TYPES from "../../constants/types";
 
-@provide("HelloController")
+@provide("Music/HelloController").whenTargetNamed("testModule").done()
 class HelloController {
     private _logger: Logger;
 

@@ -2,7 +2,7 @@ import TYPES from "../../constants/types";
 import Logger from "./logger";
 import { provide, inject } from "../../ioc/ioc";
 
-@provide(TYPES.Logger)
+@provide(TYPES.Logger).done()
 class LoggerImpl implements Logger {
     private _appName: string;
 

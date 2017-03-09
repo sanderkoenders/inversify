@@ -14,7 +14,7 @@ class Main {
     }
 
     public onListening() {
-        let helloController: any = container.get("HelloController");
+        let helloController: any = container.getNamed("Music/HelloController", "testModule");
 
         helloController.hello("Sander");
     }
