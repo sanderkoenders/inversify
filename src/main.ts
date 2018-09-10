@@ -1,39 +1,37 @@
 import * as express from 'express';
-import Loader from './ioc/loader';
+import Ioc from './ioc/ioc';
 import * as path from 'path';
-import { container } from './ioc/ioc';
 import TYPES from './constants/types';
+import HelloController from './modules/testModule/helloController';
 
 class Main {
-    private app: express.Application;
+  private app: express.Application;
+  private environment: Environment;
+  private container: Ioc;
 
-    public constructor(environment: any) {
-        this.app = express();
+  public constructor(environment: Environment) {
+    this.app = express();
+    this.environment = environment;
+    this.container = new Ioc(path.resolve(__dirname, '..'));
+  }
 
-        this.initializeDependencyInjector(environment);
-    }
+  public async initialize() {
+    // Dynamically load annotated classes inside the loadPaths context
+    this.container.componentScan(this.environment.loadPaths);
 
-    public onListening() {
-        const helloController: any = container.getNamed('Music/HelloController', 'testModule');
+    // Bind dependencies that need manual defining
+    this.container.bind<Environment>(TYPES.Environment).toConstantValue(this.environment);
+  }
 
-        helloController.hello('Sander');
-    }
+  public onListening() {
+    const helloController = this.container.getNamed<HelloController>('Music/HelloController', 'awesomeModule');
 
-    private initializeDependencyInjector(environment: any) {
-        container.bind<Environment>(TYPES.Environment).toConstantValue(environment);
+    helloController.hello('Sander');
+  }
 
-        this.loadJsFiles(environment.loadPaths);
-    }
-
-    private loadJsFiles(loadPaths: string[]) {
-        loadPaths = loadPaths.map(dir => path.join(__dirname, dir));
-
-        Loader.load(loadPaths);
-    }
-
-    public get App(): express.Application {
-        return this.app;
-    }
+  public get App(): express.Application {
+    return this.app;
+  }
 }
 
 export = Main;
