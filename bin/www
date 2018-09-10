@@ -7,7 +7,7 @@ const debug = require('debug')('express:server');
 const http = require('http');
 
 try {
-    const env = require('../env.json');
+    const env = require('../config/env.json');
 
     startServer(env);
 } catch (err) {
