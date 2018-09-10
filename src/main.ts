@@ -26,9 +26,9 @@ class Main {
     }
 
     private loadJsFiles(loadPaths: string[]) {
-        loadPaths.forEach((dir) => {
-            Loader.load(path.join(__dirname, dir));
-        });
+        loadPaths = loadPaths.map(dir => path.join(__dirname, dir));
+
+        Loader.load(loadPaths);
     }
 
     public get App(): express.Application {

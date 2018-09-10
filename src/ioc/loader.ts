@@ -1,9 +1,13 @@
+import { ContainerModule } from 'inversify';
 import * as fs from 'fs';
 import * as path from 'path';
+import { container } from './ioc';
 
 class Loader {
-    public static load(baseDir: string) {
-        Loader.readDir(baseDir);
+    public static load(directories: string[]) {
+        directories.forEach(Loader.readDir);
+
+        container.load(Loader.getContainerModuleForDependencies());
     }
 
     private static readDir(dir: string) {
@@ -24,6 +28,13 @@ class Loader {
         if (path.extname(filePath) === '.js') {
             require(filePath);
         }
+    }
+
+    private static getContainerModuleForDependencies() {
+        return new ContainerModule((bind) => {
+            const provideMetadata: any[] = Reflect.getMetadata('inversify-binding-decorators:provide', Reflect) || [];
+            provideMetadata.map(metadata => metadata.constraint(bind, metadata.implementationType));
+        });
     }
 }
 
