@@ -1,18 +1,18 @@
-import { inject, fluentProvide } from '../../ioc/ioc';
+import { inject, fluentProvide } from '../../ioc/iocUtils';
 import Logger from '../../libraries/logger/logger';
 import TYPES from '../../constants/types';
 
 @fluentProvide('Music/HelloController').whenTargetNamed('testModule').done()
 class HelloController {
-    private logger: Logger;
+  private logger: Logger;
 
-    public constructor(@inject(TYPES.Logger) logger: Logger) {
-        this.logger = logger;
-    }
+  public constructor(@inject(TYPES.Logger) logger: Logger) {
+    this.logger = logger;
+  }
 
-    public hello(name: string) {
-        this.logger.log('Hello ' + name);
-    }
+  public hello(name: string) {
+    this.logger.log('Hello ' + name);
+  }
 }
 
 export default HelloController;
