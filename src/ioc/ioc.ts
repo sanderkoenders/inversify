@@ -1,9 +1,7 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { Container, inject } from 'inversify';
-import { autoProvide, makeFluentProvideDecorator } from 'inversify-binding-decorators';
+import { autoProvide, provide, fluentProvide } from 'inversify-binding-decorators';
 
-let container = new Container();
+const container = new Container();
 
-let provide = makeFluentProvideDecorator(container);
-
-export { container, autoProvide, provide, inject };
+export { container, autoProvide, provide, inject, fluentProvide };

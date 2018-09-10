@@ -1,17 +1,17 @@
-import { inject, provide } from "../../ioc/ioc";
-import Logger from "../../libraries/logger/logger";
-import TYPES from "../../constants/types";
+import { inject, fluentProvide } from '../../ioc/ioc';
+import Logger from '../../libraries/logger/logger';
+import TYPES from '../../constants/types';
 
-@provide("Music/HelloController").whenTargetNamed("testModule").done()
+@fluentProvide('Music/HelloController').whenTargetNamed('testModule').done()
 class HelloController {
-    private _logger: Logger;
+    private logger: Logger;
 
     public constructor(@inject(TYPES.Logger) logger: Logger) {
-        this._logger = logger;
+        this.logger = logger;
     }
 
     public hello(name: string) {
-        this._logger.log("Hello " + name);
+        this.logger.log('Hello ' + name);
     }
 }
 

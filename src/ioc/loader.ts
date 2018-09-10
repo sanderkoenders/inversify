@@ -1,29 +1,27 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
 
 class Loader {
     public static load(baseDir: string) {
         Loader.readDir(baseDir);
     }
 
-    private static readDir(dir) {
+    private static readDir(dir: string) {
         fs.readdirSync(dir).forEach((entity) => {
             Loader.processEntity(path.join(dir, entity));
         });
     }
 
     private static processEntity(entity: string) {
-        if(fs.statSync(entity).isDirectory()) {
+        if (fs.statSync(entity).isDirectory()) {
             Loader.readDir(entity);
-        }
-        else
-        {
+        } else {
             Loader.loadFile(entity);
         }
     }
 
-    private static loadFile(filePath) {
-        if(path.extname(filePath) == ".js") {
+    private static loadFile(filePath: string) {
+        if (path.extname(filePath) === '.js') {
             require(filePath);
         }
     }
