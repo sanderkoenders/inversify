@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import 'reflect-metadata';
 
-export default class Ioc {
+export default class IocContext {
   private static METADATA_PROVIDE_KEY = 'inversify-binding-decorators:provide';
   private static ALLOWED_EXTENSIONS = ['.js'];
 
@@ -19,16 +19,8 @@ export default class Ioc {
     this.container.load(this.getAnnotatedDependencies());
   }
 
-  public bind<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>) {
-    return this.container.bind<T>(serviceIdentifier);
-  }
-
-  public get<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>) {
-    return this.container.get<T>(serviceIdentifier);
-  }
-
-  public getNamed<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>, named: string | number | symbol) {
-    return this.container.getNamed<T>(serviceIdentifier, named);
+  public getContainer() {
+    return this.container;
   }
 
   private readDir(dir: string) {
@@ -46,14 +38,14 @@ export default class Ioc {
   }
 
   private loadFile(filePath: string) {
-    if (Ioc.ALLOWED_EXTENSIONS.indexOf(path.extname(filePath)) !== -1) {
+    if (IocContext.ALLOWED_EXTENSIONS.indexOf(path.extname(filePath)) !== -1) {
       this.loader(filePath);
     }
   }
 
   private getAnnotatedDependencies() {
     return new ContainerModule(bind => {
-      const provideMetadata: any[] = Reflect.getMetadata(Ioc.METADATA_PROVIDE_KEY, Reflect) || [];
+      const provideMetadata: any[] = Reflect.getMetadata(IocContext.METADATA_PROVIDE_KEY, Reflect) || [];
       provideMetadata.map(metadata => metadata.constraint(bind, metadata.implementationType));
     });
   }
