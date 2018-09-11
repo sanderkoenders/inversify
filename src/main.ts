@@ -22,6 +22,7 @@ class Main {
     // Bind dependencies that need manual defining
     const container = this.iocContext.getContainer();
     container.bind<Environment>(TYPES.Environment).toConstantValue(this.environment);
+    container.bind(TYPES.Console).toConstantValue(global.console);
   }
 
   public onListening() {
