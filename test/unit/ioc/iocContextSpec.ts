@@ -18,8 +18,6 @@ const reflect: any = {
 };
 
 describe('IocContext', () => {
-  const DONT_CARE: any = {};
-
   const sandbox = sinon.createSandbox();
   const projectRoot = '/path/to/project';
   const contextPath = 'services';
@@ -27,39 +25,23 @@ describe('IocContext', () => {
   const modulePath = path.join(projectRoot, contextPath, 'module');
 
   let readdirSyncStub: sinon.SinonStub;
-  let statSyncStub: sinon.SinonStub;
   let loaderStub: sinon.SinonStub;
   let getMetadataStub: sinon.SinonStub;
-  let containerLoadStub: sinon.SinonStub;
   let bindStub: sinon.SinonStub;
   let constraintStub: sinon.SinonStub;
 
   let subjectUnderTest: IocContext;
 
   beforeEach(() => {
-    readdirSyncStub = sandbox.stub(fs, 'readdirSync');
-    readdirSyncStub.withArgs(path.join(projectRoot, contextPath)).returns(['awesomeModule', 'module']);
-    readdirSyncStub.withArgs(awesomeModulePath).returns(['awesomeFile.js', 'anotherAwesomeFile.js', 'notAJsFile.txt']);
-    readdirSyncStub.withArgs(modulePath).returns(['file.js', 'anotherFile.ts']);
-
-    statSyncStub = sandbox.stub(fs, 'statSync');
-    statSyncStub.withArgs(path.join(projectRoot, contextPath, 'module')).returns({ isDirectory: () => true });
-    statSyncStub.withArgs(path.join(projectRoot, contextPath, 'awesomeModule')).returns({ isDirectory: () => true });
-    statSyncStub.returns({ isDirectory: () => false });
-
-    constraintStub = sandbox.stub();
-    constraintStub.callsArg(0);
-
-    getMetadataStub = sandbox.stub(reflect, 'getMetadata');
-    getMetadataStub.returns([{ constraint: constraintStub, implementationType: 'test' }]);
-
-    bindStub = sandbox.stub();
-    containerLoadStub = sandbox.stub(container, 'load');
-    containerLoadStub.callsFake((containerModule: ContainerModule) => {
-      containerModule.registry(bindStub, DONT_CARE, DONT_CARE, DONT_CARE);
-    });
+    readdirSyncStub = createReaddirSyncStub();
+    constraintStub = createConstraintStub();
+    getMetadataStub = createMetadataStub(constraintStub);
 
     loaderStub = sandbox.stub(loader, 'loader');
+    bindStub = sandbox.stub();
+
+    createContainerLoadStub(bindStub);
+    createStatSyncStub();
 
     subjectUnderTest = new IocContext(projectRoot, loader.loader, container, reflect);
   });
@@ -112,4 +94,52 @@ describe('IocContext', () => {
 
     assert(bindStub.notCalled);
   });
+
+  const createReaddirSyncStub = () => {
+    const stub = sandbox.stub(fs, 'readdirSync');
+
+    stub.withArgs(path.join(projectRoot, contextPath)).returns(['awesomeModule', 'module']);
+    stub.withArgs(awesomeModulePath).returns(['awesomeFile.js', 'anotherAwesomeFile.js', 'notAJsFile.txt']);
+    stub.withArgs(modulePath).returns(['file.js', 'anotherFile.ts']);
+
+    return stub;
+  };
+
+  const createStatSyncStub = () => {
+    const stub = sandbox.stub(fs, 'statSync');
+
+    stub.withArgs(path.join(projectRoot, contextPath, 'module')).returns({ isDirectory: () => true });
+    stub.withArgs(path.join(projectRoot, contextPath, 'awesomeModule')).returns({ isDirectory: () => true });
+    stub.returns({ isDirectory: () => false });
+
+    return stub;
+  };
+
+  const createContainerLoadStub = (bind: any) => {
+    const DONT_CARE: any = {};
+
+    const stub = sandbox.stub(container, 'load');
+
+    stub.callsFake((containerModule: ContainerModule) => {
+      containerModule.registry(bind, DONT_CARE, DONT_CARE, DONT_CARE);
+    });
+
+    return stub;
+  };
+
+  const createMetadataStub = (constraint: any) => {
+    const stub = sandbox.stub(reflect, 'getMetadata');
+
+    stub.returns([{ constraint, implementationType: 'test' }]);
+
+    return stub;
+  };
+
+  const createConstraintStub = () => {
+    const stub = sandbox.stub();
+
+    stub.callsArg(0);
+
+    return stub;
+  };
 });
