@@ -1,4 +1,4 @@
-import { Container, ContainerModule, interfaces } from 'inversify';
+import { Container, ContainerModule } from 'inversify';
 import * as path from 'path';
 import * as fs from 'fs';
 import 'reflect-metadata';
@@ -9,8 +9,12 @@ export default class IocContext {
 
   public constructor(
     private projectRoot: string,
+    /* istanbul ignore next */
     private loader: NodeRequire = require,
-    private container: Container = new Container()
+    /* istanbul ignore next */
+    private container: Container = new Container(),
+    /* istanbul ignore next */
+    private reflect: any = Reflect
   ) { }
 
   public componentScan(contextPaths: string[]) {
@@ -45,7 +49,7 @@ export default class IocContext {
 
   private getAnnotatedDependencies() {
     return new ContainerModule(bind => {
-      const provideMetadata: any[] = Reflect.getMetadata(IocContext.METADATA_PROVIDE_KEY, Reflect) || [];
+      const provideMetadata: any[] = this.reflect.getMetadata(IocContext.METADATA_PROVIDE_KEY, this.reflect) || [];
       provideMetadata.map(metadata => metadata.constraint(bind, metadata.implementationType));
     });
   }
