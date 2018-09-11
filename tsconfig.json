@@ -17,6 +17,10 @@
 
     // Emit metadata and allow decorators for InversifyJS
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+
+    // Emit source maps and declaration files
+    "sourceMap": true,
+    "declaration": true
   }
 }
