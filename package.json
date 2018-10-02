@@ -27,7 +27,7 @@
     "nyc": "^13.0.1",
     "sinon": "^6.2.0",
     "source-map-support": "^0.5.9",
-    "stryker": "^0.29.1",
+    "stryker": "^0.29.4",
     "stryker-api": "^0.21.0",
     "stryker-html-reporter": "^0.16.1",
     "stryker-mocha-framework": "^0.12.1",
