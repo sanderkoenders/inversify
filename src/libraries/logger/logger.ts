@@ -1,5 +1,5 @@
 interface Logger {
-    log(message: string);
+  log(message: string): void;
 }
 
 export default Logger;

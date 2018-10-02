@@ -1,5 +1,5 @@
 interface Environment {
-    appName: string,
-    port: Number,
-    loadPaths: Array<string>
+    appName: string;
+    port: number;
+    loadPaths: string[];
 }

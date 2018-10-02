@@ -1,40 +1,41 @@
-import * as express from "express";
-import Loader from "./ioc/loader";
-import * as path from "path";
-import { container } from "./ioc/ioc";
-import TYPES from "./constants/types";
+import * as express from 'express';
+import IocContext from './ioc/ioc';
+import * as path from 'path';
+import TYPES from './constants/types';
+import HelloController from './modules/testModule/helloController';
 
 class Main {
-    private _app: express.Application;
+  private app: express.Application;
+  private environment: Environment;
+  private iocContext: IocContext;
 
-    public constructor(environment: any) {
-        this._app = express();
+  public constructor(environment: Environment) {
+    this.app = express();
+    this.environment = environment;
+    this.iocContext = new IocContext(path.resolve(__dirname, '..'));
+  }
 
-        this.initializeDependencyInjector(environment);
-    }
+  public async initialize() {
+    // Dynamically load annotated classes inside the loadPaths context
+    this.iocContext.componentScan(this.environment.loadPaths);
 
-    public onListening() {
-        let helloController: any = container.getNamed("Music/HelloController", "testModule");
+    // Bind dependencies that need manual defining
+    const container = this.iocContext.getContainer();
+    container.bind<Environment>(TYPES.Environment).toConstantValue(this.environment);
+    container.bind(TYPES.Console).toConstantValue(global.console);
+  }
 
-        helloController.hello("Sander");
-    }
+  public onListening() {
+    const container = this.iocContext.getContainer();
 
-    private initializeDependencyInjector(environment: any)
-    {
-        container.bind<Environment>(TYPES.Environment).toConstantValue(environment);
+    const helloController = container.getNamed<HelloController>('Music/HelloController', 'awesomeModule');
 
-        this.loadJsFiles(environment.loadPaths);
-    }
+    helloController.hello('Sander');
+  }
 
-    private loadJsFiles(loadPaths: Array<string>) {
-        loadPaths.forEach((dir) => {
-            Loader.load(path.join(__dirname, dir));
-        });
-    }
-
-    public get App(): express.Application {
-        return this._app;
-    }
+  public get App(): express.Application {
+    return this.app;
+  }
 }
 
 export = Main;
