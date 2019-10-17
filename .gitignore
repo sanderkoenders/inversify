@@ -12,7 +12,6 @@ config/env.json
 
 # Ignore package manager files
 node_modules/
-package-lock.json
 
 # Ignore everything related to test output
 reports
