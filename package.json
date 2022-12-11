@@ -37,7 +37,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "express": "^4.15.2",
+    "express": "^4.17.3",
     "reflect-metadata": "^0.1.12",
     "inversify": "^4.13.0",
     "inversify-binding-decorators": "^4.0.0"
